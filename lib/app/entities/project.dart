@@ -12,6 +12,7 @@ class Project {
   int? id;
 
   late String name;
+  late int estimate;
 
   @ProjectStatusConverter() //Foi criado esta classe para converter o enum em um int para ser válido no Isar
   late ProjectStatus status;
