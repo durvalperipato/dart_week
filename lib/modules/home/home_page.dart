@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_timer/app/models/project_model.dart';
 import 'package:job_timer/modules/home/controller/home_controller.dart';
 import 'package:job_timer/modules/home/widgets/header_projects_menu.dart';
+import 'package:job_timer/modules/home/widgets/project_tile.dart';
 
 class HomePage extends StatelessWidget {
   final HomeController controller;
@@ -22,6 +23,7 @@ class HomePage extends StatelessWidget {
           }
         },
         child: Scaffold(
+          backgroundColor: Colors.white,
           drawer: const Drawer(
             child: SafeArea(
               child: ListTile(
@@ -45,7 +47,7 @@ class HomePage extends StatelessWidget {
                 ),
                 // A utilização deste Sliver abaixo, foi ter a opção de deixar fixo na parte superior da tela ao rolar
                 SliverPersistentHeader(
-                  delegate: HeaderProjectMenu(),
+                  delegate: HeaderProjectMenu(controller: controller),
                   pinned: true,
                 ),
                 BlocSelector<HomeController, HomeState, bool>(
@@ -68,10 +70,8 @@ class HomePage extends StatelessWidget {
                     builder: (context, projects) {
                       return SliverList(
                           delegate: SliverChildListDelegate(projects
-                              .map((project) => ListTile(
-                                    title: Text(project.name),
-                                    subtitle: Text('${project.estimate}h'),
-                                  ))
+                              .map((project) =>
+                                  ProjectTile(projectModel: project))
                               .toList()));
                     })
               ],

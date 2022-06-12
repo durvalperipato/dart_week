@@ -9,7 +9,7 @@ import '../../../app/models/project_model.dart';
 part 'home_status.dart';
 
 class HomeController extends Cubit<HomeState> {
-  ProjectService _projectService;
+  final ProjectService _projectService;
 
   HomeController({required ProjectService projectService})
       : _projectService = projectService,
@@ -20,6 +20,24 @@ class HomeController extends Cubit<HomeState> {
       emit(state.copyWith(status: HomeStatus.loading));
       final projects = await _projectService.findByStatus(state.projectFilter);
       emit(state.copyWith(status: HomeStatus.complete, projects: projects));
+    } on Exception catch (e, s) {
+      log('Erro ao carregar os projetos', error: e, stackTrace: s);
+      emit(state.copyWith(status: HomeStatus.failure));
+    }
+  }
+
+  Future<void> filter(ProjectStatus status) async {
+    try {
+      // Necessário limpar a tela, por isso projects é []
+      // Sempre verificar como funciona a sua tela
+      emit(state.copyWith(status: HomeStatus.loading, projects: []));
+      final projects = await _projectService.findByStatus(status);
+      emit(
+        state.copyWith(
+            status: HomeStatus.complete,
+            projects: projects,
+            projectFilter: status),
+      );
     } on Exception catch (e, s) {
       log('Erro ao carregar os projetos', error: e, stackTrace: s);
       emit(state.copyWith(status: HomeStatus.failure));
